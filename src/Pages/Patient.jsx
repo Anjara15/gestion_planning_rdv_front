@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Nav, Button, Form, Table, Alert, Card } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faUser, 
+  faCalendarPlus, 
+  faHistory, 
+  faBell, 
+  faSignOutAlt,
+  faUserCircle
+} from '@fortawesome/free-solid-svg-icons';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Styles/Patient.css';
 
 const Patient = () => {
@@ -161,22 +172,252 @@ const Patient = () => {
   };
 
   return (
-    <div className="container">
-      <nav className="sidebar">
-        <h2 className="sidebar-title">Espace Patient</h2>
-        <ul className="nav-list">
-          <li className={`nav-item ${selectedSection === 'profil' ? 'nav-item-active' : ''}`} onClick={() => setSelectedSection('profil')}>Profil</li>
-          <li className={`nav-item ${selectedSection === 'rdv' ? 'nav-item-active' : ''}`} onClick={() => setSelectedSection('rdv')}>Gestion de Rendez-vous</li>
-          <li className={`nav-item ${selectedSection === 'historique' ? 'nav-item-active' : ''}`} onClick={() => setSelectedSection('historique')}>Historique</li>
-          <li className={`nav-item ${selectedSection === 'notifications' ? 'nav-item-active' : ''}`} onClick={() => setSelectedSection('notifications')}>Notifications</li>
-        </ul>
-        <button onClick={handleLogout} className="logout-btn">Déconnexion</button>
-      </nav>
-      <main className="main">
-        <h1 className="main-title">Bienvenue {user?.username || 'Patient'}</h1>
-        {renderContent()}
-      </main>
-    </div>
+    <Container fluid>
+      <Row>
+        {/* Sidebar */}
+        <div className="sidebar">
+          <div className="d-flex flex-column h-100">
+            <div className="sidebar-header">
+              <h3 className="text-white text-center">
+                <FontAwesomeIcon icon={faUserCircle} className="me-2" />
+                Espace Patient
+              </h3>
+            </div>
+            
+            <Nav className="flex-column sidebar-nav">
+              <Nav.Link 
+                className={`d-flex align-items-center ${selectedSection === 'profil' ? 'active' : ''}`}
+                onClick={() => setSelectedSection('profil')}
+              >
+                <FontAwesomeIcon icon={faUser} className="me-2 text-white" />
+                Mon Profil
+              </Nav.Link>
+              
+              <Nav.Link 
+                className={`d-flex align-items-center ${selectedSection === 'rdv' ? 'active' : ''}`}
+                onClick={() => setSelectedSection('rdv')}
+              >
+                <FontAwesomeIcon icon={faCalendarPlus} className="me-2" />
+                Nouveau RDV
+              </Nav.Link>
+              
+              <Nav.Link 
+                className={`d-flex align-items-center ${selectedSection === 'historique' ? 'active' : ''}`}
+                onClick={() => setSelectedSection('historique')}
+              >
+                <FontAwesomeIcon icon={faHistory} className="me-2" />
+                Mes RDV
+              </Nav.Link>
+              
+              <Nav.Link 
+                className={`d-flex align-items-center ${selectedSection === 'notifications' ? 'active' : ''}`}
+                onClick={() => setSelectedSection('notifications')}
+              >
+                <FontAwesomeIcon icon={faBell} className="me-2" />
+                Messages
+              </Nav.Link>
+            </Nav>
+
+            <Button   variant="danger"   className="mt-auto"  onClick={handleLogout}  >
+              <FontAwesomeIcon icon={faSignOutAlt} className="me-2 " />
+              Se déconnecter
+            </Button>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="main-content">
+          <h2 className="mb-4 d-flex align-items-center">
+            <FontAwesomeIcon icon={faUserCircle} className="me-2" />
+            Bienvenue {user?.username}
+          </h2>
+
+          {selectedSection === 'rdv' && (
+            <Card>
+              <Card.Header className="bg-primary text-white">
+                <h5 className="mb-0">Prendre un Rendez-vous</h5>
+              </Card.Header>
+              <Card.Body>
+                <Form onSubmit={handleRDVSubmit}>
+                  <Row className="g-3">
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Nom</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="nom"
+                          value={rdvData.nom}
+                          onChange={handleChange}
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Prénom</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="prenom"
+                          value={rdvData.prenom}
+                          onChange={handleChange}
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control
+                          type="email"
+                          name="email"
+                          value={rdvData.email}
+                          onChange={handleChange}
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Téléphone</Form.Label>
+                        <Form.Control
+                          type="tel"
+                          name="telephone"
+                          value={rdvData.telephone}
+                          onChange={handleChange}
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Spécialité</Form.Label>
+                        <Form.Select
+                          name="specialite"
+                          value={rdvData.specialite}
+                          onChange={handleChange}
+                          required
+                        >
+                          <option value="">-- Choisir une spécialité --</option>
+                          <option value="generaliste">Médecine générale</option>
+                          <option value="cardiologie">Cardiologie</option>
+                          <option value="dermatologie">Dermatologie</option>
+                        </Form.Select>
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Médecin (facultatif)</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="medecin"
+                          value={rdvData.medecin}
+                          onChange={handleChange}
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Date</Form.Label>
+                        <Form.Control
+                          type="date"
+                          name="date"
+                          value={rdvData.date}
+                          onChange={handleChange}
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Heure</Form.Label>
+                        <Form.Select
+                          name="heure"
+                          value={rdvData.heure}
+                          onChange={handleChange}
+                          required
+                        >
+                          <option value="">-- Choisir une heure --</option>
+                          <option value="08:00">08:00</option>
+                          <option value="10:00">10:00</option>
+                          <option value="14:00">14:00</option>
+                        </Form.Select>
+                      </Form.Group>
+                    </Col>
+                    <Col md={12}>
+                      <Button type="submit" variant="primary">
+                        Valider le rendez-vous
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form>
+              </Card.Body>
+            </Card>
+          )}
+
+          {selectedSection === 'historique' && (
+            <Card>
+              <Card.Header className="bg-primary text-white">
+                <h5 className="mb-0">Historique des Rendez-vous</h5>
+              </Card.Header>
+              <Card.Body>
+                {rendezVous.length > 0 ? (
+                  <Table hover responsive>
+                    <thead>
+                      <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Date</th>
+                        <th>Heure</th>
+                        <th>Spécialité</th>
+                        <th>Médecin</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rendezVous.map((rdv, index) => (
+                        <tr key={index}>
+                          <td>{rdv.nom}</td>
+                          <td>{rdv.prenom}</td>
+                          <td>{rdv.date}</td>
+                          <td>{rdv.heure}</td>
+                          <td>{rdv.specialite}</td>
+                          <td>{rdv.medecin}</td>
+                          <td>
+                            <Button variant="warning" size="sm" className="me-2">
+                              Modifier
+                            </Button>
+                            <Button variant="danger" size="sm">
+                              Supprimer
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                ) : (
+                  <Alert variant="info">
+                    Aucun rendez-vous enregistré.
+                  </Alert>
+                )}
+              </Card.Body>
+            </Card>
+          )}
+
+          {selectedSection === 'notifications' && (
+            <Card>
+              <Card.Header className="bg-primary text-white">
+                <h5 className="mb-0">Notifications</h5>
+              </Card.Header>
+              <Card.Body>
+                <Alert variant="info">
+                  Pas de notifications pour l'instant.
+                </Alert>
+              </Card.Body>
+            </Card>
+          )}
+        </div>
+      </Row>
+    </Container>
   );
 };
 

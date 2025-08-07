@@ -1,12 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React from "react";
-import Login from "./Pages/Login";
-import Register from "./Pages/Register";
-import Medecin from './Pages/Medecin';
-import Patient from "./Pages/Patient";
-import Admin from "./Pages/Admin";
-import ReactDOM from 'react-dom/client'
-import './index.css'
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Medecin from './pages/Medecin';
+import Patient from "./pages/Patient";
+import Admin from "./pages/Admin";
 
 
 function App() {
